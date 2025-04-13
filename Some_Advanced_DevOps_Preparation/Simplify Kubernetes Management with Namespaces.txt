@@ -1,0 +1,64 @@
+Simplify Kubernetes Management with Namespaces:
+
+Why Use Namespaces in Kubernetes?
+
+Namespaces provide a logical grouping of components like pods, services, and deployments within a cluster. They’re invaluable for:
+
+✓ Isolating environments (e.g., dev, staging, prod)
+✓ Managing multi-team or multi-project clusters
+✓ Ensuring unique resource names within a namespace
+
+Namespace Basics:
+
+° Pre-existing Namespaces: Default namespaces like default, kube-system, and kube-public already exist in every cluster.
+° Logical Isolation: Each namespace is independent, providing better organization and security.
+° Cleanup Made Easy: Deleting a namespace removes all resources within it.
+
+Key Commands for Namespaces:
+
+List namespaces: kubectl get ns 
+Create a new namespace: kubectl create namespace name 
+Set the current namespace: kubectl config set-context --current --namespace=mynamespace 
+Verify the current namespace: kubectl config view --minify | grep namespace
+
+
+Create a Pod in a Namespace
+Imperative Way:
+
+1️⃣ Create a namespace:
+kubectl create namespace mynamespace 
+
+
+2️⃣ Run a pod in the namespace:
+kubectl run nginx --image=nginx -n mynamespace 
+
+3️⃣ Verify the pod:
+kubectl get pods -n mynamespace
+
+
+Here’s an example YAML file to create a namespace and a pod:
+
+Declarative Way:
+---
+apiVersion: v1 
+kind: Namespace 
+metadata: 
+ name: myspace 
+
+--- 
+apiVersion: v1 
+kind: Pod 
+metadata: 
+ name: pod 
+ namespace: namespace-1
+spec: 
+ containers: 
+ - name: cont-1 
+ image: nginx
+ ports:
+ - containerPort: 80 
+
+
+kubectl apply -f namespace-and-pod.yml 
+
+Namespaces make Kubernetes more organized, scalable, and secure. Whether you’re isolating environments or managing resources for different teams, mastering namespaces is essential.

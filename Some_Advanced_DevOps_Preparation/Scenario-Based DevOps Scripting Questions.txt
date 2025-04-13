@@ -1,0 +1,400 @@
+Scenario-Based Scripting Questions:
+
+1.Write a script to monitor disk usage and alert when over 80%.
+
+```bash name=monitor_disk_usage.sh
+#!/bin/bash
+# Script to monitor disk usage and alert when over 80%
+
+THRESHOLD=80
+
+df -h | awk 'NR>1{print $5, $1}' | while read output;
+do
+  usage=$(echo $output | awk '{print $1}' | sed 's/%//g')
+  partition=$(echo $output | awk '{print $2}')
+  if [ $usage -ge $THRESHOLD ]; then
+    echo "Warning: Disk usage on $partition is at ${usage}%"
+    # Add your alerting logic here (e.g., send an email)
+  fi
+done
+```
+
+
+2.Write a script to clean /tmp directory older than 7 days.
+
+```bash name=clean_tmp.sh
+#!/bin/bash
+# Script to clean /tmp directory older than 7 days
+
+find /tmp -type f -mtime +7 -exec rm -f {} \;
+find /tmp -type d -empty -mtime +7 -exec rmdir {} \;
+```
+
+
+
+3.Script to monitor a web service and alert on failure.
+
+```bash name=monitor_web_service.sh
+#!/bin/bash
+# Script to monitor a web service and alert on failure
+
+URL="http://example.com"
+STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" $URL)
+
+if [ $STATUS_CODE -ne 200 ]; then
+  echo "Alert: Web service $URL returned status code $STATUS_CODE"
+  # Add your alerting logic here (e.g., send an email)
+fi
+```
+
+
+4.Rotate logs and keep last 5 files.
+
+```bash name=rotate_logs.sh
+#!/bin/bash
+# Script to rotate logs and keep last 5 files
+
+LOG_DIR="/var/log/myapp"
+LOG_FILE="myapp.log"
+MAX_FILES=5
+
+cd $LOG_DIR
+for ((i=$MAX_FILES-1; i>=0; i--)); do
+  if [ -f "$LOG_FILE.$i" ]; then
+    mv "$LOG_FILE.$i" "$LOG_FILE.$(($i+1))"
+  fi
+done
+cp $LOG_FILE $LOG_FILE.0
+> $LOG_FILE
+```
+
+
+5.Backup MySQL DB daily with timestamp.
+
+```bash name=backup_mysql.sh
+#!/bin/bash
+# Script to backup MySQL DB daily with timestamp
+
+DB_NAME="mydatabase"
+BACKUP_DIR="/backups"
+TIMESTAMP=$(date +"%F")
+BACKUP_FILE="$BACKUP_DIR/$DB_NAME-$TIMESTAMP.sql"
+
+mysqldump -u root -p $DB_NAME > $BACKUP_FILE
+```
+
+
+6.Validate IP addresses in a text file.
+
+```bash name=validate_ip.sh
+#!/bin/bash
+# Script to validate IP addresses in a text file
+
+FILE="ips.txt"
+
+grep -E "^([0-9]{1,3}\.){3}[0-9]{1,3}$" $FILE | while read ip; do
+  if [[ $ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+    echo "$ip is a valid IP address"
+  else
+    echo "$ip is not a valid IP address"
+  fi
+done
+```
+
+
+7.Read server IPs from a file and ping each.
+
+```bash name=ping_servers.sh
+#!/bin/bash
+# Script to read server IPs from a file and ping each
+
+FILE="servers.txt"
+
+while read -r ip; do
+  ping -c 1 $ip &> /dev/null
+  if [ $? -eq 0 ]; then
+    echo "Ping to $ip successful"
+  else
+    echo "Ping to $ip failed"
+  fi
+done < $FILE
+```
+
+
+
+8.Fetch and email top CPU-consuming processes.
+
+```bash name=email_top_cpu.sh
+#!/bin/bash
+# Script to fetch and email top CPU-consuming processes
+
+EMAIL="admin@example.com"
+TOP_PROCESSES=$(ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -n 10)
+
+echo -e "Top CPU-consuming processes:\n\n$TOP_PROCESSES" | mail -s "CPU Report" $EMAIL
+```
+
+
+9.SSH into multiple servers and execute commands.
+
+```bash name=ssh_multiple_servers.sh
+#!/bin/bash
+# Script to SSH into multiple servers and execute commands
+
+SERVERS="server1 server2 server3"
+COMMAND="uptime"
+
+for server in $SERVERS; do
+  ssh $server "$COMMAND"
+done
+```
+
+
+
+10. Script to archive application logs to S3.
+
+```bash name=archive_logs_s3.sh
+#!/bin/bash
+# Script to archive application logs to S3
+
+LOG_DIR="/var/log/myapp"
+S3_BUCKET="s3://myapp-logs"
+
+tar -czf /tmp/myapp-logs.tar.gz -C $LOG_DIR .
+aws s3 cp /tmp/myapp-logs.tar.gz $S3_BUCKET
+rm /tmp/myapp-logs.tar.gz
+```
+
+
+
+11. Script to restart a service if down.
+
+```bash name=restart_service.sh
+#!/bin/bash
+# Script to restart a service if down
+
+SERVICE="myapp"
+if ! systemctl is-active --quiet $SERVICE; then
+  systemctl restart $SERVICE
+  echo "Service $SERVICE was down and has been restarted"
+fi
+```
+
+
+
+12. Script to tail multiple logs in parallel.
+
+```bash name=tail_multiple_logs.sh
+#!/bin/bash
+# Script to tail multiple logs in parallel
+
+LOG_FILES="/var/log/syslog /var/log/auth.log"
+
+tail -f $LOG_FILES
+```
+
+
+
+13. Monitor SSL cert expiration.
+
+```bash name=monitor_ssl_cert.sh
+#!/bin/bash
+# Script to monitor SSL cert expiration
+
+DOMAIN="example.com"
+EXPIRY_DATE=$(echo | openssl s_client -servername $DOMAIN -connect $DOMAIN:443 2>/dev/null | openssl x509 -noout -enddate | cut -d= -f2)
+
+EXPIRY_SECONDS=$(date -d "$EXPIRY_DATE" +%s)
+CURRENT_SECONDS=$(date +%s)
+DIFF_SECONDS=$((EXPIRY_SECONDS - CURRENT_SECONDS))
+DAYS_LEFT=$((DIFF_SECONDS / 86400))
+
+if [ $DAYS_LEFT -le 30 ]; then
+  echo "Alert: SSL Certificate for $DOMAIN expires in $DAYS_LEFT days"
+  # Add your alerting logic here (e.g., send an email)
+fi
+```
+
+
+
+14. Parse log file and count failed logins.
+
+```bash name=parse_log_failed_logins.sh
+#!/bin/bash
+# Script to parse log file and count failed logins
+
+LOG_FILE="/var/log/auth.log"
+grep "Failed password" $LOG_FILE | wc -l
+```
+
+
+
+
+15. Report users with UID > 1000.
+
+```bash name=report_users_uid.sh
+#!/bin/bash
+# Script to report users with UID > 1000
+
+awk -F: '$3 > 1000 {print $1}' /etc/passwd
+```
+
+
+
+16. Find and kill zombie processes.
+
+```bash name=kill_zombie_processes.sh
+#!/bin/bash
+# Script to find and kill zombie processes
+
+ps aux | grep 'Z' | awk '{print $2}' | xargs kill -9
+```
+
+
+
+17. Script to compare two directories for differences.
+
+```bash name=compare_directories.sh
+#!/bin/bash
+# Script to compare two directories for differences
+
+DIR1="/path/to/dir1"
+DIR2="/path/to/dir2"
+
+diff -r $DIR1 $DIR2
+```
+
+
+
+
+18. Monitor network bandwidth in real-time.
+
+```bash name=monitor_network_bandwidth.sh
+#!/bin/bash
+# Script to monitor network bandwidth in real-time
+
+IFACE="eth0"
+watch -n 1 "cat /proc/net/dev | grep $IFACE"
+```
+
+
+
+
+19. Script to create users from CSV file.
+
+```bash name=create_users_from_csv.sh
+#!/bin/bash
+# Script to create users from CSV file
+
+CSV_FILE="users.csv"
+
+while IFS=, read -r username password; do
+  useradd -m -p $(openssl passwd -1 $password) $username
+done < $CSV_FILE
+```
+
+
+
+
+20. Alert if a Docker container is not running.
+
+```bash name=alert_docker_container.sh
+#!/bin/bash
+# Script to alert if a Docker container is not running
+
+CONTAINER_NAME="myapp"
+if ! docker ps | grep -q $CONTAINER_NAME; then
+  echo "Alert: Docker container $CONTAINER_NAME is not running"
+  # Add your alerting logic here (e.g., send an email)
+fi
+```
+
+
+
+
+21. Script to auto-deploy a static site using rsync.
+
+```bash name=auto_deploy_static_site.sh
+#!/bin/bash
+# Script to auto-deploy a static site using rsync
+
+SRC_DIR="/path/to/static/site"
+DEST_DIR="user@server:/path/to/deploy"
+
+rsync -avz $SRC_DIR $DEST_DIR
+```
+
+
+
+
+22. Create a script to automate git pull and restart service.
+
+```bash name=git_pull_restart.sh
+#!/bin/bash
+# Script to automate git pull and restart service
+
+REPO_DIR="/path/to/repo"
+SERVICE="myapp"
+
+cd $REPO_DIR
+git pull
+systemctl restart $SERVICE
+```
+
+
+
+23. Generate a dynamic inventory file for Ansible.
+
+```bash name=generate_ansible_inventory.sh
+#!/bin/bash
+# Script to generate a dynamic inventory file for Ansible
+
+cat <<EOL > inventory
+[web]
+web1 ansible_host=192.168.1.1
+web2 ansible_host=192.168.1.2
+
+[db]
+db1 ansible_host=192.168.1.3
+EOL
+```
+
+
+
+
+24. Build a script to validate YAML/JSON files.
+
+```bash name=validate_yaml_json.sh
+#!/bin/bash
+# Script to validate YAML/JSON files
+
+FILE=$1
+
+if [[ $FILE == *.yaml || $FILE == *.yml ]]; then
+  yamllint $FILE
+elif [[ $FILE == *.json ]]; then
+  jq empty $FILE
+else
+  echo "Unsupported file format"
+fi
+```
+
+
+
+
+25. Parse Jenkins job status via API and alert if failed.
+
+```bash name=parse_jenkins_status.sh
+#!/bin/bash
+# Script to parse Jenkins job status via API and alert if failed
+
+JENKINS_URL="http://jenkins.example.com"
+JOB_NAME="myjob"
+
+STATUS=$(curl -s "$JENKINS_URL/job/$JOB_NAME/lastBuild/api/json" | jq -r .result)
+
+if [ "$STATUS" != "SUCCESS" ]; then
+  echo "Alert: Jenkins job $JOB_NAME failed"
+  # Add your alerting logic here (e.g., send an email)
+fi
+```

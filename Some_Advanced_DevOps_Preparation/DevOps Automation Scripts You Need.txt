@@ -1,0 +1,443 @@
+Must-Have DevOps Automation Scripts for Everyday Use! 
+
+1️⃣ Automate Docker Container Cleanup 🐳
+
+Unused containers and dangling images take up space. This script helps keep your system clean.
+
+#!/bin/bash
+echo "Cleaning up Docker containers, images, and volumes..."
+docker system prune -af --volumes
+
+2️⃣ Monitor Kubernetes Pod Status ☸️
+
+Quickly check for non-running pods in your cluster.
+
+#!/bin/bash
+echo "Checking for non-running pods..."
+kubectl get pods --all-namespaces | grep -v Running
+
+3️⃣ Backup & Restore ETCD in Kubernetes 🔄
+
+Ensure your cluster's etcd data is safely backed up.
+
+# Backup
+ETCDCTL_API=3 etcdctl snapshot save backup.db
+
+# Restore
+ETCDCTL_API=3 etcdctl snapshot restore backup.db
+
+4️⃣ Automate AWS EC2 Instance Start/Stop ☁️
+
+Save costs by stopping unused instances overnight.
+
+#!/bin/bash
+aws ec2 stop-instances --instance-ids i-xxxxxxxxxxxxxxxxx
+
+5️⃣Terraform Plan & Apply Automation 🏗️
+
+Run Terraform commands in a single script for CI/CD.
+
+#!/bin/bash
+terraform init && terraform plan -out=tfplan && terraform apply tfplan
+
+
+6️⃣ Automate Log File Cleanup 📂
+
+Prevent disk space issues by deleting old logs automatically.
+
+#!/bin/bash
+echo "Deleting log files older than 7 days..."
+find /var/log -type f -name "*.log" -mtime +7 -exec rm -f {} \;
+
+7️⃣ Check SSL Certificate Expiry 🔒
+
+Avoid downtime by monitoring SSL certificate expiration.
+
+#!/bin/bash
+DOMAIN="yourdomain.com"
+echo | openssl s_client -servername $DOMAIN -connect $DOMAIN:443 2>/dev/null | openssl x509 -noout -enddate
+
+8️⃣ Automate System Package Updates 💡
+
+Keep your Linux system updated without manual intervention.
+
+#!/bin/bash
+echo "Updating system packages..."
+sudo apt update && sudo apt upgrade -y
+
+9️⃣ Send Alerts for High CPU Usage ⚡
+
+Get notified when CPU usage crosses a threshold.
+
+#!/bin/bash
+THRESHOLD=80
+USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{print $2 + $4}')
+if (( $(echo "$USAGE > $THRESHOLD" | bc -l) )); then
+ echo "High CPU Usage: $USAGE%" | mail -s "CPU Alert" you@example.com
+fi
+
+🔟 Restart a Failing Kubernetes Pod ☸️
+
+Automatically restart pods stuck in CrashLoopBackOff.
+
+#!/bin/bash
+echo "Restarting failed pods..."
+kubectl get pods --all-namespaces | grep CrashLoopBackOff | awk '{print $2}' | xargs kubectl delete pod
+
+
+1️⃣1️⃣ Monitor Disk Usage and Send Alerts 💾
+
+Prevent storage issues by getting alerts when disk space is low.
+
+#!/bin/bash
+THRESHOLD=80
+USAGE=$(df -h / | awk 'NR==2 {print $5}' | sed 's/%//')
+if [ "$USAGE" -gt "$THRESHOLD" ]; then
+ echo "Disk usage is above $THRESHOLD%: $USAGE%" | mail -s "Disk Space Alert" you@example.com
+fi
+
+1️⃣2️⃣ Find and Kill High-Memory Processes 🔥
+
+Identify and stop processes consuming excessive RAM.
+
+#!/bin/bash
+echo "Killing high-memory processes..."
+ps aux --sort=-%mem | awk 'NR==2 {print $2}' | xargs kill -9
+
+1️⃣3️⃣ Rotate Nginx Logs Without Downtime 🌐
+
+Avoid log overflow by rotating logs safely.
+
+#!/bin/bash
+echo "Rotating Nginx logs..."
+mv /var/log/nginx/access.log /var/log/nginx/access.log.$(date +%F)
+mv /var/log/nginx/error.log /var/log/nginx/error.log.$(date +%F)
+nginx -s reload
+
+1️⃣4️⃣ Check and Restart Downed Services 🔄
+
+Ensure critical services are always running.
+
+#!/bin/bash
+SERVICES=("nginx" "mysql" "docker")
+for SERVICE in "${SERVICES[@]}"; do
+ systemctl is-active --quiet $SERVICE || systemctl restart $SERVICE
+done
+
+1️⃣5️⃣ Automate Database Backup 🛡️
+
+Backup your MySQL database daily to prevent data loss.
+
+#!/bin/bash
+DB_NAME="your_database"
+BACKUP_DIR="/backup"
+mkdir -p $BACKUP_DIR
+mysqldump -u root -pYourPassword $DB_NAME > $BACKUP_DIR/db_backup_$(date +%F).sql
+
+
+1️⃣6️⃣ Check Open Ports on a Server 🔍
+
+Quickly identify open ports to improve security.
+
+#!/bin/bash
+echo "Listing open ports..."
+netstat -tulnp
+
+1️⃣7️⃣ Sync Files Between Servers Using Rsync 🔄
+
+Automate file synchronization between remote servers.
+
+#!/bin/bash
+rsync -avz -e "ssh -i /path/to/key.pem" /source/directory/ user@remote-server:/destination/directory/
+
+1️⃣8️⃣ Restart a Pod When a Specific Container Fails ☸️
+
+Ensure high availability by auto-restarting failed containers.
+
+#!/bin/bash
+POD=$(kubectl get pods --no-headers | grep my-app | awk '{print $1}')
+kubectl delete pod $POD
+
+1️⃣9️⃣ Automate System Health Check Report 📊
+
+Monitor CPU, memory, and disk usage in one command.
+
+#!/bin/bash
+echo "System Health Report"
+echo "---------------------"
+echo "CPU Load: $(uptime)"
+echo "Memory Usage: $(free -m)"
+echo "Disk Usage: $(df -h /)"
+
+2️⃣0️⃣ Enable Auto-Scaling in AWS EC2 ☁️
+
+Automatically scale EC2 instances based on CPU usage.
+
+aws autoscaling update-auto-scaling-group --auto-scaling-group-name my-asg --min-size 2 --max-size 10 --desired-capacity 4
+
+
+2️⃣1️⃣ Check Running Docker Containers & Stop Unused Ones 🐳
+
+Identify active containers and stop unused ones to free up resources.
+
+#!/bin/bash
+echo "Currently running containers:"
+docker ps
+echo "Stopping all unused containers..."
+docker container prune -f
+
+2️⃣2️⃣ Monitor and Restart a Downed Web Server 🌐
+
+Ensure your web server stays online by checking its status and restarting if needed.
+
+#!/bin/bash
+SERVICE="nginx"
+if ! systemctl is-active --quiet $SERVICE; then
+ echo "$SERVICE is down. Restarting..."
+ systemctl restart $SERVICE
+fi
+
+2️⃣3️⃣ List IAM Users Without MFA in AWS ☁️
+
+Enhance security by identifying IAM users without Multi-Factor Authentication (MFA).
+
+aws iam list-users --query "Users[?!(contains(LoginProfile, 'CreateDate'))].UserName"
+
+2️⃣4️⃣ Clean Up Old Docker Images 🗑️
+
+Remove images older than 30 days to free up disk space.
+
+#!/bin/bash
+echo "Deleting Docker images older than 30 days..."
+docker images --format "{{.Repository}} {{.ID}} {{.CreatedSince}}" | awk '$3 ~ /weeks|months/ {print $2}' | xargs docker rmi -f
+
+2️⃣5️⃣ Check and Update Kubernetes Nodes ☸️
+
+Keep your Kubernetes nodes updated by checking outdated ones.
+
+#!/bin/bash
+kubectl get nodes -o json | jq -r '.items[] | select(.status.nodeInfo.kubeletVersion != "v1.27.0") | .metadata.name'
+
+
+3️⃣1️⃣ List All Expired TLS Certificates in Kubernetes 🔒
+
+Avoid outages by checking expired Kubernetes secrets containing TLS certificates.
+
+#!/bin/bash
+kubectl get secrets --all-namespaces -o json | jq -r '.items[] | select(.type=="kubernetes.io/tls") | .metadata.name + " - " + (.data["tls.crt"] | @base64d | openssl x509 -noout -enddate)'
+
+3️⃣2️⃣ Check Running Processes & Sort by Memory Usage 💾
+
+Identify processes consuming the most memory.
+
+#!/bin/bash
+echo "Top 10 memory-consuming processes:"
+ps aux --sort=-%mem | head -11
+
+3️⃣3️⃣ Automatically Restart Stuck Kubernetes Deployments ☸️
+
+Detect and restart deployments stuck in an unhealthy state.
+
+#!/bin/bash
+echo "Checking for stuck deployments..."
+kubectl get deployments --all-namespaces | grep -v "AVAILABLE" | awk '{print $2}' | xargs kubectl rollout restart deployment
+
+3️⃣4️⃣ Scan a System for Open Ports 🔍
+
+Check which ports are open on your machine.
+
+#!/bin/bash
+echo "Scanning open ports..."
+netstat -tulnp | grep LISTEN
+
+3️⃣5️⃣ Backup & Restore PostgreSQL Database 🛡️
+
+Automate database backups to prevent data loss.
+
+# Backup
+pg_dump -U postgres -d mydatabase -F c -f /backup/db_backup_$(date +%F).dump
+
+# Restore
+pg_restore -U postgres -d mydatabase -c /backup/db_backup_YYYY-MM-DD.dump
+
+
+
+3️⃣6️⃣ Scan for Failed Kubernetes Jobs & Restart Them ☸️
+
+Ensure Kubernetes jobs don’t get stuck in a failed state.
+
+#!/bin/bash
+echo "Restarting failed Kubernetes jobs..."
+kubectl get jobs --all-namespaces | grep "Failed" | awk '{print $1, $2}' | while read ns job; do
+ kubectl delete job $job -n $ns
+done
+
+
+
+3️⃣7️⃣ Find and Delete Zombie Processes 🧟‍♂️
+
+Identify and remove zombie processes to free up resources.
+
+#!/bin/bash
+echo "Finding and removing zombie processes..."
+ps aux | awk '{ if ($8 ~ /Z/) print $2 }' | xargs kill -9
+
+
+
+3️⃣8️⃣ Monitor Available Memory and Alert if Low 🚨
+
+Send an alert when free memory drops below a threshold.
+
+#!/bin/bash
+THRESHOLD=500 # MB
+FREE_MEM=$(free -m | awk '/Mem:/ {print $4}')
+if [ "$FREE_MEM" -lt "$THRESHOLD" ]; then
+ echo "Low memory alert! Free memory: ${FREE_MEM}MB" | mail -s "Memory Alert" you@example.com
+fi
+
+
+
+3️⃣9️⃣ Check AWS S3 Bucket Public Access 🔒
+
+Ensure no S3 buckets are publicly exposed.
+
+aws s3api list-buckets --query "Buckets[].Name" --output text | while read BUCKET; do
+ aws s3api get-bucket-acl --bucket $BUCKET --query "Grants[?Grantee.URI=='https://lnkd.in/gCkVCbzx']"
+done
+
+
+
+4️⃣0️⃣ Monitor and Auto-Scale Pods in Kubernetes ☸️
+
+Automatically scale a deployment based on CPU usage.
+
+kubectl autoscale deployment my-deployment --cpu-percent=70 --min=2 --max=10
+
+
+
+
+4️⃣1️⃣ Check and Restart Unhealthy Docker Containers 🐳
+
+Automatically restart any container stuck in an unhealthy state.
+
+#!/bin/bash
+echo "Checking for unhealthy Docker containers..."
+docker ps --filter "health=unhealthy" -q | xargs -r docker restart
+
+4️⃣2️⃣ Find and Delete Unused AWS EBS Volumes ☁️
+
+Save costs by removing unattached EBS volumes.
+
+aws ec2 describe-volumes --query "Volumes[?State=='available'].VolumeId" --output text | while read VOLUME; do
+ aws ec2 delete-volume --volume-id $VOLUME
+done
+
+4️⃣3️⃣ List All Running Pods with High CPU Usage in Kubernetes ☸️
+
+Identify pods consuming excessive CPU resources.
+
+#!/bin/bash
+echo "Checking pods with high CPU usage..."
+kubectl top pods --all-namespaces | awk '$3 > 500 {print $1, $2, $3}'
+
+4️⃣4️⃣ Backup Nginx Configuration Before Any Change 🔄
+
+Prevent misconfigurations by automatically backing up Nginx settings.
+
+#!/bin/bash
+BACKUP_DIR="/backup/nginx"
+mkdir -p $BACKUP_DIR
+cp -r /etc/nginx/nginx.conf $BACKUP_DIR/nginx.conf_$(date +%F)
+
+4️⃣5️⃣ Find & List Large Unused Docker Images 🗑️
+
+Identify and remove large unused images to free up space.
+
+#!/bin/bash
+echo "Listing large unused Docker images..."
+docker images --format "{{.Repository}}:{{.Tag}} {{.Size}}" | sort -k2 -rh | head -10
+
+
+
+4️⃣6️⃣ Automatically Restart Failed Systemd Services 🔄
+
+Ensure critical services are always running by restarting failed ones.
+
+#!/bin/bash
+echo "Restarting failed services..."
+systemctl list-units --failed --no-pager | awk 'NR>1 {print $1}' | xargs -r systemctl restart
+
+4️⃣7️⃣ Check AWS EC2 Instances Without Assigned IAM Roles ☁️
+
+Identify instances missing IAM roles to avoid permission issues.
+
+aws ec2 describe-instances --query "Reservations[*].Instances[?IamInstanceProfile==null].[InstanceId]" --output text
+
+4️⃣8️⃣ Monitor Kubernetes Node Disk Usage ☸️
+
+Get an overview of disk usage across Kubernetes nodes.
+
+#!/bin/bash
+echo "Checking Kubernetes node disk usage..."
+kubectl get nodes -o custom-columns="NAME:.metadata.name,DISK:.status.allocatable.ephemeral-storage"
+
+4️⃣9️⃣ Scan & List Open Network Ports on a Linux Server 🔍
+
+Find open ports to ensure security and prevent vulnerabilities.
+
+#!/bin/bash
+echo "Scanning open network ports..."
+ss -tulnp
+
+5️⃣0️⃣ Automatically Purge Old Helm Releases 🚀
+
+Remove old Helm releases to keep your Kubernetes cluster clean.
+
+#!/bin/bash
+echo "Deleting Helm releases older than 30 days..."
+helm list --filter '.*' --date | awk '$4 < (systime() - 2592000) {print $1}' | xargs -r helm delete
+
+
+5️⃣1️⃣ Check SSL Certificate Expiry for a Domain 🔒
+
+Avoid downtime by monitoring SSL certificate expiration.
+
+#!/bin/bash
+DOMAIN="example.com"
+echo | openssl s_client -servername $DOMAIN -connect $DOMAIN:443 2>/dev/null | openssl x509 -noout -enddate
+
+5️⃣2️⃣ Identify Large Log Files Consuming Disk Space 💾
+
+Find and manage oversized log files before they fill up your disk.
+
+#!/bin/bash
+echo "Finding log files larger than 500MB..."
+find /var/log -type f -size +500M -exec ls -lh {} \;
+
+5️⃣3️⃣ Restart Kubernetes Pods with High Memory Usage ☸️
+
+Ensure stability by restarting pods that consume excessive memory.
+
+#!/bin/bash
+echo "Restarting pods with high memory usage..."
+kubectl top pods --all-namespaces | awk '$3 > 500 {print $2}' | xargs kubectl delete pod
+
+5️⃣4️⃣ Check Unused Security Groups in AWS ☁️
+
+Identify security groups that are not attached to any instances.
+
+aws ec2 describe-security-groups --query "SecurityGroups[*].GroupId" --output text | while read SG; do
+ aws ec2 describe-instances --filters "Name=instance.group-id,Values=$SG" --query "Reservations[*].Instances[*].InstanceId" --output text | grep -q . || echo "Unused: $SG"
+done
+
+5️⃣5️⃣ Automate Daily Backup for a Directory 🔄
+
+Keep your critical files safe by scheduling daily backups.
+
+#!/bin/bash
+SRC_DIR="/important/data"
+BACKUP_DIR="/backup"
+mkdir -p $BACKUP_DIR
+tar -czf $BACKUP_DIR/backup_$(date +%F).tar.gz $SRC_DIR
+
+

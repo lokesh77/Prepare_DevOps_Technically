@@ -1,0 +1,60 @@
+Redirection in Shell Scripting:
+
+Redirection is a powerful feature in shell scripting that allows you to control where input comes from and where output goes. It can be used to redirect data to or from files, commands, or streams, making scripts more efficient and organized.
+
+Types of Redirection
+
+ 1. Input Redirection (<): Reads input from a file.
+ 2. Output Redirection (>): Writes output to a file (overwrites existing content).
+ 3. Append Redirection (>>): Appends output to a file without overwriting it.
+ 4. Error Redirection (2>): Redirects error messages to a file.
+ 5. Combine Output and Errors (&> or 2>&1): Sends both standard output and errors to the same destination.
+
+Examples
+
+1. Input Redirection
+
+Reads input from a file instead of the keyboard.
+
+#!/bin/bash 
+while read line; do 
+ echo "Line: $line" 
+done < input.txt 
+
+This reads each line from input.txt and prints it.
+
+2. Output Redirection
+
+Writes output to a file, overwriting it.
+
+#!/bin/bash 
+echo "Hello, World!" > output.txt 
+
+The output.txt file will contain Hello, World!.
+
+3. Append Redirection
+
+Appends output to a file.
+
+#!/bin/bash 
+echo "Appending this line" >> output.txt 
+
+This adds a new line to the end of output.txt.
+
+4. Error Redirection
+
+Redirects error messages to a file.
+
+#!/bin/bash 
+ls non_existent_file 2> error.log 
+
+If the file doesn’t exist, the error message is saved in error.log.
+
+5. Combining Output and Errors
+
+Redirects both standard output and errors to the same file.
+
+#!/bin/bash 
+ls non_existent_file existing_file &> combined.log 
+
+Both the output and errors are stored in combined.log.
