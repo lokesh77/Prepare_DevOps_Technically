@@ -1,0 +1,58 @@
+1. **What is meant by geolocation-based routing and latency-based routing, and which AWS service helps in configuring such routing policies? Explain a scenario.**  
+   **Answer:**  
+   - **Geolocation-Based Routing:** Routes user requests based on their geographic location.  
+   - **Latency-Based Routing:** Routes user requests to the endpoint with the lowest network latency.  
+   - **AWS Service:** Amazon Route 53 supports both geolocation and latency-based routing.  
+   **Scenario:**  
+   - A global e-commerce platform uses geolocation-based routing to direct users from Europe to servers in the Frankfurt region and users from the US to servers in the Ohio region.  
+   - Latency-based routing is used within the US to ensure users are directed to the region (Ohio or Northern California) with the lowest latency.
+
+2. **What are some best practices for organizing Terraform configurations to ensure they are modular and reusable?**  
+   **Answer:**  
+   - **Use Modules:** Create reusable modules for resources like VPCs, EC2 instances, and security groups.  
+   - **Separate Environments:** Maintain separate configurations for dev, staging, and prod environments.  
+   - **Store State Securely:** Use remote backends like S3 with DynamoDB for state locking.  
+   - **Version Control:** Use Git to track changes and enforce code reviews.  
+   **Real-World Example:** Created reusable Terraform modules for networking and compute resources, reducing duplication and simplifying updates across environments.
+
+3. **Explain the Git branching strategy and how it supports collaboration in software development.**  
+   **Answer:**  
+   - **GitFlow:** Uses long-lived branches like `main` and `develop`, and feature branches for new tasks.  
+   - **GitHub Flow:** Focuses on a single main branch and short-lived feature branches with pull requests for review.  
+   - **Trunk-Based Development:** Developers commit directly to the main branch or small feature branches frequently.  
+   **How It Supports Collaboration:**  
+   - Clear workflows reduce merge conflicts.  
+   - Code reviews via pull requests improve code quality.  
+   - Isolated feature branches allow parallel development.  
+   **Real-World Example:** A team used GitFlow to manage a large project with separate branches for feature development, bug fixes, and releases.
+
+4. **How would you implement security controls in a CI/CD pipeline?**  
+   **Answer:**  
+   - **Static Code Analysis:** Integrate tools like SonarQube or CodeQL to identify vulnerabilities in the codebase.  
+   - **Dependency Scanning:** Use tools like Snyk or OWASP Dependency-Check to scan for vulnerable libraries.  
+   - **Secrets Management:** Use tools like HashiCorp Vault or AWS Secrets Manager to securely store and retrieve secrets.  
+   - **Runtime Security:** Implement tools like Falco to monitor container behavior during runtime.  
+   **Real-World Example:** Integrated SonarQube into a Jenkins pipeline to enforce secure coding practices and detect vulnerabilities early.
+
+5. **Vulnerabilities found during security scans in a continuous delivery pipeline**  
+   **Answer:**  
+   - **Examples of Vulnerabilities:**  
+     - Hardcoded secrets in code.  
+     - Use of outdated or vulnerable dependencies.  
+     - Misconfigured cloud resources (e.g., open S3 buckets).  
+   **Steps to Address Vulnerabilities:**  
+   - Fix issues before deployment or block the pipeline if critical vulnerabilities are detected.  
+   - Automate dependency updates using tools like Dependabot.  
+   **Real-World Example:** Detected a critical vulnerability in a Node.js library during a CI/CD pipeline scan, updated the dependency, and re-ran tests before deployment.
+
+6. **What security considerations do you take into account when using Infrastructure as Code (IaC)? How do you secure your IaC templates?**  
+   **Answer:**  
+   - **Security Considerations:**  
+     - Avoid hardcoding sensitive data like access keys.  
+     - Use least privilege principles for IAM roles and policies.  
+     - Validate templates for security misconfigurations using tools like Checkov or tfsec.  
+   - **How to Secure IaC Templates:**  
+     - Store templates in version control systems with restricted access.  
+     - Implement automated security scans during CI/CD pipelines.  
+     - Use parameterized templates and external secret management systems.  
+   **Real-World Example:** Secured Terraform templates by integrating tfsec in the pipeline to catch open security groups and overly permissive IAM policies.

@@ -1,0 +1,229 @@
+1. **What is GIT stash?**  
+   **Answer:** `git stash` temporarily saves uncommitted changes in the working directory so you can switch branches or perform other tasks without losing your progress.  
+   **Real-World Example:** While working on a feature, you can stash your changes to quickly switch to a different branch for an urgent bug fix.  
+   **Command Example:**  
+   ```bash
+   git stash
+   git stash apply
+   ```
+
+2. **What is a branching strategy?**  
+   **Answer:** A branching strategy defines how branches are created and managed in a version control system.  
+   - **GitFlow:** Separate branches for features, releases, and hotfixes.  
+   - **GitHub Flow:** Single main branch with feature branches.  
+   - **Trunk-Based Development:** All changes are committed to the main branch.  
+   **Real-World Example:** A team uses GitFlow to manage feature development and bug fixes in parallel.
+
+3. **What is the command to discard changes in the working directory?**  
+   **Answer:**  
+   ```bash
+   git checkout -- <file>
+   ```  
+   or  
+   ```bash
+   git reset --hard
+   ```
+
+4. **How do you debug the exited container?**  
+   **Answer:** Use the following command to inspect logs and the state of the container:  
+   ```bash
+   docker logs <container-id>
+   docker inspect <container-id>
+   ```
+
+5. **How do you execute jobs in parallel in Jenkins?**  
+   **Answer:**  
+   - Use the `parallel` step in declarative pipelines.  
+   **Pipeline Example:**  
+   ```groovy
+   parallel {
+       stage('Job 1') {
+           steps {
+               echo "Executing Job 1"
+           }
+       }
+       stage('Job 2') {
+           steps {
+               echo "Executing Job 2"
+           }
+       }
+   }
+   ```
+
+6. **Maven Lifecycle?**  
+   **Answer:**  
+   - **Phases:** Validate, Compile, Test, Package, Verify, Install, Deploy.  
+   - Each phase builds upon the previous one.  
+   **Real-World Example:** The `mvn package` command compiles and runs tests before packaging the application.
+
+7. **How do you upgrade Jenkins?**  
+   **Answer:**  
+   - Backup Jenkins configurations.  
+   - Download the latest `.war` file.  
+   - Replace the existing Jenkins `.war` file and restart the server.  
+
+8. **What is a Parameterized Job in Jenkins?**  
+   **Answer:** A job that accepts user-defined parameters at runtime, such as environment variables or file paths.  
+   **Real-World Example:** A Jenkins job takes an environment (dev, test, prod) as input to deploy an application.
+
+9. **What is Docker Swarm?**  
+   **Answer:** Docker Swarm is a container orchestration tool that manages clusters of Docker nodes.  
+
+10. **How do you handle codes in Nexus satisfactorily?**  
+    **Answer:** Ensure proper versioning of artifacts and use Nexus cleanup policies to manage storage.  
+
+11. **How do you manage space issues in the Jenkins server?**  
+    **Answer:**  
+    - Use Jenkins cleanup policies to delete old builds.  
+    - Archive artifacts to external storage.  
+
+12. **What is a multibranch project in Jenkins?**  
+    **Answer:** A Jenkins project that automatically creates jobs for each branch in a repository.  
+
+13. **How do you secure the Jenkins server?**  
+    **Answer:**  
+    - Enable authentication and authorization.  
+    - Use HTTPS for secure communication.  
+
+14. **How do you manage GitHub roles?**  
+    **Answer:** Use GitHub's role-based access control (RBAC) to assign roles like Admin, Maintainer, and Contributor.  
+
+15. **What is a NULL resource in Terraform?**  
+    **Answer:** A resource that performs actions without provisioning infrastructure.  
+
+16. **What is `terraform fmt`?**  
+    **Answer:** Formats Terraform configuration files to a standard style.  
+
+17. **What is Snowball?**  
+    **Answer:** AWS Snowball is a data transfer device for moving large amounts of data to AWS.  
+
+18. **How do you manage credentials in Terraform?**  
+    **Answer:** Use environment variables or secret management tools such as AWS Secrets Manager.  
+
+19. **What is CodeDeploy in AWS?**  
+    **Answer:** AWS CodeDeploy automates application deployments to EC2, Lambda, or on-premises servers.  
+
+20. **Can you attach a single EBS volume to multiple EC2 instances at the same time?**  
+    **Answer:** Only if the EBS volume is configured as a multi-attach volume for specific use cases like clustered applications.  
+
+21. **Can you use multiple `FROM` in a Dockerfile?**  
+    **Answer:** Yes, for multi-stage builds to optimize image size.  
+
+22. **Dockerfile runs as which user?**  
+    **Answer:** By default, it runs as `root`, but you can specify a user using the `USER` instruction.  
+
+23. **How can we pass arguments to a Dockerfile?**  
+    **Answer:** Use the `ARG` instruction.  
+    **Example:**  
+    ```Dockerfile
+    ARG APP_ENV
+    ```
+
+24. **What are deployment strategies?**  
+    **Answer:**  
+    - Blue-Green Deployment.  
+    - Canary Deployment.  
+    - Rolling Updates.  
+
+25. **What is an Application Load Balancer?**  
+    **Answer:** A Layer 7 load balancer for HTTP/HTTPS traffic with features like path-based and host-based routing.  
+
+26. **What is Kubernetes architecture?**  
+    **Answer:** Composed of a control plane (API server, etcd) and worker nodes (kubelet, kube-proxy).  
+
+27. **What is Fargate service in AWS?**  
+    **Answer:** AWS Fargate is a serverless compute engine for running containers.  
+
+28. **What are Register targets in Ansible?**  
+    **Answer:** Used to store the result of a task in a variable.  
+
+29. **How do you pull artifacts from Nexus?**  
+    **Answer:** Use tools like Maven or curl commands.  
+
+30. **How to access the S3 bucket privately?**  
+    **Answer:** Use VPC endpoints or bucket policies to restrict access.  
+
+31. **What is the difference between a NAT instance and a NAT gateway?**  
+    **Answer:** NAT gateway is managed by AWS and scales automatically, while a NAT instance requires manual setup.  
+
+32. **How can you restrict particular IPs accessing EC2 instances?**  
+    **Answer:** Use security group rules to allow or deny specific IP ranges.  
+
+33. **What is VPC peering?**  
+    **Answer:** A connection between two VPCs to enable private communication.  
+
+34. **What is Transit Gateway?**  
+    **Answer:** A service for connecting multiple VPCs and on-premises networks.  
+
+35. **What are the types of autoscaling?**  
+    **Answer:** Scheduled, Dynamic, and Predictive autoscaling.  
+
+36. **To prevent DDoS attacks, which load balancer is used?**  
+    **Answer:** AWS Shield Advanced on Application Load Balancers.  
+
+37. **What is a sticky session?**  
+    **Answer:** A session that binds a user to a specific backend instance.  
+
+38. **What is Lambda?**  
+    **Answer:** AWS Lambda is a serverless compute service that runs code in response to events.  
+
+39. **How do you manage the tfstate file in Terraform?**  
+    **Answer:** Store it in remote backends like S3 with DynamoDB for state locking.  
+
+40. **How do you create multiple EC2 instances in Terraform?**  
+    **Answer:** Use the `count` or `for_each` meta-arguments.  
+
+41. **AWS has released a new service; how does Terraform behave?**  
+    **Answer:** Terraform updates its provider to support the new service.  
+
+42. **How do you uncommit the changes that have already been pushed to GitHub?**  
+    **Answer:** Use `git reset` followed by `git push --force`.  
+
+43. **What is the difference between git pull and git fetch?**  
+    **Answer:**  
+    - **git pull:** Fetches and merges changes.  
+    - **git fetch:** Only fetches changes.  
+
+44. **What is Jenkins File?**  
+    **Answer:** A text file containing the definition of a Jenkins pipeline.  
+
+45. **What are Shared Libraries in Jenkins?**  
+    **Answer:** Reusable code snippets stored in a central Git repository.  
+
+46. **What is Docker networking?**  
+    **Answer:** Enables communication between containers and external systems.  
+
+47. **What is a Trust relationship in AWS?**  
+    **Answer:** A relationship between two AWS accounts or services for granting access.  
+
+48. **What is a Public Subnet and Private Subnet?**  
+    **Answer:**  
+    - **Public Subnet:** Accessible from the internet.  
+    - **Private Subnet:** No direct internet access.  
+
+49. **How do you establish a connection between EC2 instances?**  
+    **Answer:** Use SSH or application ports with proper security group rules.  
+
+50. **What is the `realm` command?**  
+    **Answer:** A command to manage Kerberos or Active Directory domains.  
+
+51. **How do you differentiate dev, test, and prod environments in AWS?**  
+    **Answer:** Use tagging, separate accounts, or isolated VPCs.  
+
+52. **Types of EC2 instances?**  
+    **Answer:** General Purpose, Compute Optimized, Memory Optimized, Storage Optimized.  
+
+53. **How can you encrypt an unencrypted EBS volume without creating a fresh EC2 instance?**  
+    **Answer:** Create a snapshot, copy it with encryption, and attach the new volume.  
+
+54. **How do you install Nginx in the Ansible playbook?**  
+    **Example:**  
+    ```yaml
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+    ```
+
+55. **How do you recover a deleted object in S3?**  
+    **Answer:** Enable versioning and restore the previous version of the object.

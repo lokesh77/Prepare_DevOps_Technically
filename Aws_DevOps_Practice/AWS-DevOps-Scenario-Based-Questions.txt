@@ -1,0 +1,145 @@
+1. **What is the purpose of a NAT gateway, and what are some of its use cases?**
+   **Answer:** A NAT (Network Address Translation) gateway enables instances in a private subnet to connect to the internet or other AWS services while preventing inbound internet traffic.  
+   **Use Cases:**  
+   - Downloading security patches for private EC2 instances.
+   - Allowing private instances to send data to external APIs securely.  
+   **Real-World Example:** A backend system in a private subnet uses a NAT gateway to download application updates without exposing the subnet to internet traffic.
+
+2. **How do you decide which load balancer is best suited for an application?**
+   **Answer:**  
+   - **Application Load Balancer (ALB):** Use for HTTP/HTTPS traffic with features like path-based and host-based routing.  
+   - **Network Load Balancer (NLB):** Use for high-throughput, low-latency TCP/UDP traffic.  
+   - **Classic Load Balancer (CLB):** Use for legacy applications with basic load balancing needs.  
+   **Real-World Example:** An e-commerce application uses ALB for routing user requests to microservices, while NLB is used for database traffic requiring low latency.
+
+3. **What are the key features of the Nginx service?**
+   **Answer:**  
+   - Reverse proxy and load balancing.  
+   - HTTP caching.  
+   - SSL/TLS termination.  
+   - Web server capabilities.  
+   **Real-World Example:** Nginx is configured as a reverse proxy to route traffic between a React frontend and a backend Node.js API.
+
+4. **What are the differences between a Network Load Balancer and an Application Load Balancer?**
+   **Answer:**  
+   - **NLB:** Handles TCP/UDP traffic, supports millions of requests per second, and has ultra-low latency.  
+   - **ALB:** Manages HTTP/HTTPS traffic, supports WebSocket, and provides advanced routing based on URL paths or headers.  
+   **Real-World Example:** A gaming server uses NLB for real-time multiplayer communication, while a REST API uses ALB for routing requests based on endpoints.
+
+5. **Why is a DynamoDB table used to lock the Terraform state file?**
+   **Answer:** DynamoDB is used as a locking mechanism to prevent multiple processes from modifying the state file simultaneously. This ensures consistency and avoids race conditions during deployments.
+
+6. **How can we manage the Terraform state file effectively?**
+   **Answer:**  
+   - Use remote backends like S3 for centralized state storage.  
+   - Enable state locking with DynamoDB to prevent concurrent updates.  
+   - Use versioning in S3 to recover from accidental overwrites.  
+   **Real-World Example:** A team used an S3 bucket with versioning enabled and a DynamoDB table for locking to manage Terraform states securely.
+
+7. **If you encounter an error with the `terraform plan` command, how would you troubleshoot it? What steps would you take?**
+   **Answer:**  
+   - Check for syntax errors in the configuration files.  
+   - Use the `terraform validate` command to identify invalid configurations.  
+   - Verify the backend configuration for state file access issues.  
+   **Real-World Example:** Debugged an issue where incorrect AWS credentials caused `terraform plan` to fail by reconfiguring the AWS CLI profile.
+
+8. **What stages are available in a Jenkins pipeline? How do you configure a webhook for auto-triggering builds?**
+   **Answer:**  
+   - **Stages:** Build, Test, Deploy, Post-deploy.  
+   - **Webhook Configuration:** Add a webhook in the GitHub repository pointing to Jenkins with the `/github-webhook/` endpoint.  
+   **Real-World Example:** Configured a Jenkins pipeline with stages for building a Java application, running JUnit tests, and deploying to a Kubernetes cluster.
+
+9. **What DevSecOps tools have you used? How do you secure applications using these tools?**
+   **Answer:**  
+   - Tools: Snyk for dependency scanning, SonarQube for code quality, and Vault for secrets management.  
+   **Real-World Example:** Used Snyk to identify and fix vulnerabilities in Node.js dependencies during CI/CD pipeline execution.
+
+10. **How do you manage secrets in a Jenkins pipeline?**
+    **Answer:**  
+    - Use Jenkins Credentials Manager to store secrets securely.  
+    - Inject secrets into the pipeline using environment variables.  
+    **Real-World Example:** Configured AWS access keys in Jenkins Credentials Manager and used them in a pipeline to deploy to S3.
+
+11. **How do you deploy a microservices application so that each service remains isolated?**
+    **Answer:**  
+    - Deploy each service in a separate Kubernetes namespace.  
+    - Use network policies to control inter-service communication.  
+    **Real-World Example:** Deployed a microservices architecture with separate namespaces for user, order, and payment services in EKS.
+
+12. **In a Dockerfile, what are the use cases for the `COPY` and `ADD` commands?**
+    **Answer:**  
+    - **COPY:** Used for copying local files/directories.  
+    - **ADD:** Used for copying files and extracting archives or downloading files from URLs.  
+    **Real-World Example:** Used `COPY` to include application code in an image and `ADD` to extract a `.tar.gz` file during Docker image build.
+
+13. **Write a Dockerfile for a Node.js application, including the build and run commands.**
+    **Answer:**  
+    ```Dockerfile
+    FROM node:16
+    WORKDIR /app
+    COPY package*.json ./
+    RUN npm install
+    COPY . .
+    EXPOSE 3000
+    CMD ["npm", "start"]
+    ```
+    **Build Command:** `docker build -t node-app .`  
+    **Run Command:** `docker run -p 3000:3000 node-app`
+
+14. **Briefly explain Kubernetes architecture, covering each component and its use case.**
+    **Answer:**  
+    - **Control Plane:** Manages the cluster (API Server, Scheduler, etcd).  
+    - **Worker Nodes:** Run application workloads in pods.  
+    - **Kubelet:** Communicates with the control plane to manage pods.  
+    - **Kube-proxy:** Manages networking within the cluster.  
+    **Real-World Example:** Configured a Kubernetes cluster with 3 worker nodes and 1 control plane to run a microservices application.
+
+15. **How do you manage connectivity between multiple pods in a Kubernetes cluster?**
+    **Answer:** Use a CNI (Container Network Interface) plugin like Calico or Flannel to establish networking and enable communication between pods.
+
+16. **How do worker nodes communicate with the control plane (master node)?**
+    **Answer:** Worker nodes use the kubelet to communicate with the API server in the control plane over HTTPS.
+
+17. **How can we increase the capacity of pods using the CLI (command line interface)?**
+    **Answer:** Use the `kubectl scale` command to increase replicas.  
+    **Example Command:**  
+    ```bash
+    kubectl scale deployment <deployment-name> --replicas=<number>
+    ```
+
+18. **What are the use cases of EKS (Elastic Kubernetes Service)?**
+    **Answer:**  
+    - Running containerized microservices.  
+    - Scaling applications dynamically.  
+    - Integrating with AWS services like ALB and CloudWatch.  
+    **Real-World Example:** Used EKS to deploy a scalable web application integrated with an RDS database.
+
+19. **If a new version fails, how would you roll it back?**
+    **Answer:** Use Kubernetes' `kubectl rollout undo` command or Helm's rollback feature.  
+    **Real-World Example:** Rolled back a failed deployment in EKS using Helm to restore the previous stable version.
+
+20. **What is an Ansible playbook, and how does it work? How does Ansible handle variables differently from playbooks?**
+    **Answer:**  
+    - An Ansible playbook is a YAML file that defines tasks to automate.  
+    - Variables can be defined in inventory files, playbooks, or external files.  
+    **Real-World Example:** Used a playbook to configure Nginx on multiple EC2 instances.
+
+21. **How do you configure Grafana and Prometheus for monitoring?**
+    **Answer:**  
+    - Configure Prometheus to scrape metrics from targets.  
+    - Integrate Prometheus as a data source in Grafana.  
+    - Create dashboards and alerts in Grafana.  
+    **Real-World Example:** Monitored Kubernetes pods using Grafana dashboards and Prometheus metrics.
+
+22. **What steps would you take if an EC2 instance runs out of memory? Are there specific strategies you'd try first to increase its capacity?**
+    **Answer:**  
+    - Check memory usage with CloudWatch or SSH.  
+    - Increase instance size or add swap memory.  
+    - Optimize the application to reduce memory usage.  
+    **Real-World Example:** Upgraded an EC2 instance from t2.medium to t2.large to handle increased traffic.
+
+23. **What are the major challenges you've faced in your role?**
+    **Answer:**  
+    - Balancing rapid deployments with maintaining application stability.  
+    - Debugging intermittent issues in distributed systems.  
+    **Real-World Example:** Resolved a Kubernetes pod scaling issue that caused intermittent downtime during high traffic.
